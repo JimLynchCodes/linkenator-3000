@@ -44,12 +44,12 @@ const THEATER_MODE = true;
   
   // await clickSearchIcon();
   
-  await t_wait();
+  // await t_wait();
   // const el = await page.evaluateHandle(() => document.activeElement);
-  await t_wait();
+  // await t_wait();
   // await el.type('pair programming');
 
-  await t_wait();
+  // await t_wait();
 
   // await page.keyboard.press('Enter');
   
@@ -60,16 +60,136 @@ const THEATER_MODE = true;
   
   
   
-  // const [msgBtn1, msgBtn2] = await page.waitForSelector('button');
+  // const elements = await page.waitForSelector('div.entity-result');
 
-  const elements = await page.waitForSelector('button[contains(text(), "Message"]');
+  // const elements = await page.$x('//button[contains(., "Message")]');
   // const elements = await page.$$('button[text()="Message"]');
 
-  elements.forEach(async element => {
+  // const elements = await page.$x("//*[contains(text(), 'Message')]");
+
+  // console.log({ elements })
+
+  // const text = await page.evaluate(() => {
     
-    console.log({ element })
-    // await element.click();
-  });
+  //   console.log({ 'evaluating...': 'ok' })
+
+  //   const entityResults = document.querySelectorAll('div.entity-result');
+    
+  //   console.log({ entityResults })
+
+    // console.log(element.textContent)
+
+    // const button = await element.waitForSelector('button');
+    
+    // await button.click()
+  // });
+
+
+  async function getButtonsContaining(text) {
+    
+    const gudButtons = []
+
+    const allButtons = await page.$x('//button');
+
+    allButtons.forEach( async (button, index) => {
+    
+      console.log({ button })
+  
+      let value = await page.evaluate(el => el.textContent, button)
+  
+      console.log(value)
+  
+      if (value.trim().includes(text))
+        gudButtons.push(button)
+
+      if (index === (allButtons.length - 1)) {
+        return gudButtons;
+      }
+
+    })
+
+  }
+
+  console.log({ page })
+
+  const buttons = await page.$x('//button');
+
+  console.log({ buttons })
+  
+  var one = true;
+
+  buttons.forEach( async (button, index) => {
+    
+    console.log({ button })
+
+    let value = await page.evaluate(el => el.textContent, button)
+
+    console.log(value)
+
+    if (value.trim() === 'Message' && one) {
+      
+      one = false;
+
+      await button.click();
+
+      await t_wait(2_000);
+      // const xButtons = await getButtonsContaining('X')
+      
+      // page.re
+      
+      const xButtons = await page.waitForSelector('.msg-overlay-bubble-header__badge-container');
+      //  const xButtons = await page.$x("//div");
+      
+      console.log(xButtons)
+      
+      const innerBtns = await page.$x('//button')
+      
+      console.log({ xButtons })
+      console.log({ innerBtns })
+      console.log( innerBtns.length )
+      
+      // await innerBtns[1].click()
+      
+      innerBtns.forEach(async inner => {
+        console.log(inner)
+        console.log(inner.innerText)
+        console.log(inner.text)
+        
+        let value = await page.evaluate(el => el.textContent, inner)
+        
+        await t_wait(2_000);
+        console.log(value)
+        
+        if (value.includes("Close your conversation with"))
+        await inner.click()
+        
+        await t_wait(2_000);
+        process.exit(0)
+      })
+
+      // xButtons[0].click()
+
+      
+      await t_wait(30_000);
+    }
+    
+
+  })
+  // console.log({ b })
+  // console.log({ c })
+
+// console.log(text[0]);
+// console.log(text[1]);
+// console.log(text[2]);
+
+
+
+
+  // elements.forEach(async element => {
+    
+  //   console.log({ element })
+  //   // await element.click();
+  // });
 
 
   // console.log(msgBtn1)
